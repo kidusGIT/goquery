@@ -2,7 +2,6 @@ package goquery
 
 import (
 	"errors"
-	"fmt"
 	"io"
 	"net/http"
 	"net/url"
@@ -55,7 +54,6 @@ func NewDocumentFromReader(r io.Reader) (*Document, error) {
 		return nil, e
 	}
 
-	fmt.Println("Root: ", root)
 	return newDocument(root, nil), nil
 }
 

@@ -2,31 +2,41 @@ package main
 
 import (
 	"fmt"
-	"log"
-	"os"
+	"strings"
 
-	"github.com/PuerkitoBio/goquery"
+	"golang.org/x/net/html"
 )
 
 func main() {
 	// 1. Open the local file
-	file, err := os.Open("min-test.html")
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer file.Close()
+	s := `<p>Hello, Gemini!</p>`
+	r := strings.NewReader(s)
 
-	// 2. Initialize goquery
-	doc, err := goquery.NewDocumentFromReader(file)
+	doc, err := html.Parse(r)
 	if err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
 
-	// 3. Debugging Tests
+	// doc is now the root of your HTML tree
+	fmt.Printf("Root type: %v\n", doc.FirstChild.Data)
 
-	// Test A: Find by ID and get text
-	title := doc.Find("#main-title").Text()
-	fmt.Printf("Title found: %s\n", title)
+	// file, err := os.Open("min-test.html")
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+	// defer file.Close()
+
+	// // 2. Initialize goquery
+	// doc, err := goquery.NewDocumentFromReader(file)
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+
+	// // 3. Debugging Tests
+
+	// // Test A: Find by ID and get text
+	// title := doc.Find("#main-title").Text()
+	// fmt.Printf("Title found: %s\n", title)
 
 	// Test B: Loop through list and get attributes
 	// doc.Find("ul#item-list li").Each(func(i int, s *goquery.Selection) {
