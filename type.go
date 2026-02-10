@@ -2,6 +2,7 @@ package goquery
 
 import (
 	"errors"
+	"fmt"
 	"io"
 	"net/http"
 	"net/url"
@@ -53,6 +54,8 @@ func NewDocumentFromReader(r io.Reader) (*Document, error) {
 	if e != nil {
 		return nil, e
 	}
+
+	fmt.Println("Root: ", root)
 	return newDocument(root, nil), nil
 }
 
@@ -131,8 +134,8 @@ type Matcher interface {
 //
 // For example, those two statements are semantically equivalent:
 //
-//     sel1 := doc.Find("a").First()
-//     sel2 := doc.FindMatcher(goquery.Single("a"))
+//	sel1 := doc.Find("a").First()
+//	sel2 := doc.FindMatcher(goquery.Single("a"))
 //
 // The one using Single is optimized to be potentially much faster on large
 // documents.

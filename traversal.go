@@ -693,7 +693,8 @@ func getParentNodes(nodes []*html.Node) []*html.Node {
 // to iterate on and the mapping function that returns an array of nodes.
 // Returns an array of nodes mapped by calling the callback function once for
 // each node in the source nodes.
-func mapNodes(nodes []*html.Node, f func(int, *html.Node) []*html.Node) (result []*html.Node) {
+func mapNodes(nodes []*html.Node, f func(int, *html.Node) []*html.Node) []*html.Node {
+	var result []*html.Node
 	set := make(map[*html.Node]bool)
 	for i, n := range nodes {
 		if vals := f(i, n); len(vals) > 0 {
