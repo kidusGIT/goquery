@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"io"
 	"log"
 	"os"
 	"strings"
@@ -11,7 +12,8 @@ import (
 )
 
 func main() {
-	parserTest()
+	htmlTokenizer()
+	// parserTest()
 	// writer()
 	// htmlReader()
 }
@@ -20,9 +22,73 @@ func parserTest() {
 	s := `<p>Hello, Gemini!</p>`
 	r := strings.NewReader(s)
 
+	fmt.Println("s: ", s)
+
 	_, err := html.Parse(r)
 	if err != nil {
 		panic(err)
+	}
+}
+
+func htmlTokenizer() {
+	// input := `<a href="https://google.com"> Google </a> <p> Hello </p> <a href="/about"> About </a> `
+	input := `
+		<div id="inventory-container">
+			<article class="data-card">
+				<div class="info">
+					<span class="price-tag">$899.99</span>
+					<hr/>
+				</div>
+			</article>
+		</div>
+	`
+
+	tokenizer := html.NewTokenizer(strings.NewReader(input))
+
+	for {
+		// 1. Advance to the next token
+		tokenType := tokenizer.Next()
+
+		// 2. Check for the end of the document
+		if tokenType == html.ErrorToken {
+			err := tokenizer.Err()
+			if err == io.EOF {
+				break // End of file reached gracefully
+			}
+			fmt.Printf("Error: %v", err)
+			break
+		}
+
+		// 3. Process the token
+		token := tokenizer.Token()
+		switch tokenType {
+		case html.StartTagToken:
+			{
+				fmt.Println("----------------------------")
+				fmt.Println("tag ", token.Data)
+
+				// Check if the tag is an anchor <a>
+				for _, attr := range token.Attr {
+					fmt.Println("key:", attr.Key, "val:", attr.Val)
+				}
+			}
+		case html.TextToken:
+			{
+				fmt.Println("------------- Text -------------------")
+				fmt.Println("Type:", token.Type)
+				fmt.Println("Text ", token.Data)
+			}
+		case html.EndTagToken:
+			{
+				fmt.Println("-----------------")
+				fmt.Println("End of tag ", token.Data)
+			}
+		case html.SelfClosingTagToken:
+			{
+				fmt.Println("==================")
+				fmt.Println("Self closing tag ", token.Data)
+			}
+		}
 	}
 }
 
